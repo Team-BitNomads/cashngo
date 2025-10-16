@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@theme {
+    --font-family-sans: "Inter", theme(fontFamily.sans);
+    --color-brand-purple: #A855F7;
+    --color-brand-yellow: #F59E0B;
+    --color-brand-orange: #EF4444;
+}
