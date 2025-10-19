@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { Route, Routes, Outlet } from 'react-router-dom';
 
 // --- Page Components ---
 // These are the top-level views for your application.
@@ -38,7 +38,6 @@ const AppLayout = () => {
  */
 function App() {
   return (
-    <Router>
       <Routes>
         {/*
          * --- PUBLIC ROUTES ---
@@ -68,7 +67,6 @@ function App() {
         </Route>
 
       </Routes>
-    </Router>
   );
 }
 

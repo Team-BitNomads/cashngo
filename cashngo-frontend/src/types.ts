@@ -17,6 +17,7 @@ export interface UserProfile {
   major: string;
   current_balance: number;
   badges: Badge[];
+  skill_level: 'Beginner' | 'Intermediate' | 'Expert';
 }
 export interface QuizQuestion {
 text: string;
@@ -28,3 +29,14 @@ quiz_id: string;
 skill_name: string;
 questions: QuizQuestion[];
 }
+export type SignupPayload = {
+  fullName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  role: 'worker' | 'employer';
+  status?: 'undergraduate' | 'graduate';
+  jobDescription?: string;
+  location: string;
+  password: string;
+};
