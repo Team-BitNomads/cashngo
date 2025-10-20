@@ -169,3 +169,22 @@
         }
     }
 }
+
+
+/* --- Custom Glow Effect on Hover --- */
+
+.glow-on-hover::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 1rem;
+    /* slightly larger than card's rounded-xl */
+    background: radial-gradient(300px circle at var(--x) var(--y), hsl(var(--primary) / 0.5), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: -1;
+}
+
+.glow-on-hover:hover::before {
+    opacity: 1;
+}

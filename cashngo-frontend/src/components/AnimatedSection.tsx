@@ -1,12 +1,17 @@
-import React, { useRef, useState, useEffect, type ReactNode } from 'react';
+import React, { useRef, useState, useEffect, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
-  delay?: string; // e.g., 'delay-300'
+  delay?: string;
 }
 
-const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, className = '', delay = '' }) => {
+const AnimatedSection: React.FC<AnimatedSectionProps> = ({
+  children,
+  className = "",
+  delay = "",
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -18,15 +23,11 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, className =
           observer.unobserve(entry.target);
         }
       },
-      {
-        threshold: 0.1, // Trigger when 10% of the element is visible
-      }
+      { threshold: 0.1 }
     );
-
     if (ref.current) {
       observer.observe(ref.current);
     }
-
     return () => {
       if (ref.current) {
         observer.unobserve(ref.current);
@@ -37,13 +38,15 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, className =
   return (
     <div
       ref={ref}
-      className={`${className} transition-all duration-700 ease-out ${delay} ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-      }`}
+      className={cn(
+        className,
+        "transition-all duration-700 ease-out",
+        delay,
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      )}
     >
       {children}
     </div>
   );
 };
-
 export default AnimatedSection;

@@ -70,7 +70,7 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
     console.log("Backend not ready for profile, using fallback mock data.");
     // Fallback data for the profile page
     return {
-      name: "Sadiq (Test User)",
+      name: "Sadiq",
       major: "Business Administration",
       current_balance: 12.5,
       badges: [
@@ -80,6 +80,7 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
           icon_url: "/icons/social.png",
         },
       ],
+      onboardingComplete: true,
       skill_level: "Intermediate",
     };
   }
@@ -168,19 +169,39 @@ export const loginUser = async (
   // return response.data;
 
   // --- MOCK API RESPONSE (for hackathon) ---
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve({
-        token: "fake-jwt-token-12345",
-        user: {
-          name: "Sadiq (Logged In)",
-          major: "Computer Science",
-          current_balance: 12.5,
-          skill_level: "Expert",
-          badges: [],
-        },
-      });
-    }, 1000); // Simulate network delay
+      // For the student who has already onboarded
+      if (username === "sadiq" && password === "password123") {
+        resolve({
+          token: "fake-jwt-token-for-sadiq-12345",
+          user: {
+            name: "Sadiq",
+            major: "Computer Science",
+            current_balance: 84.5,
+            skill_level: "Intermediate",
+            badges: [],
+            onboardingComplete: true, // <-- Add this flag
+          },
+        });
+      }
+      // NEW: For the employer who has already onboarded
+      else if (username === "employer" && password === "password123") {
+        resolve({
+          token: "fake-jwt-token-for-employer-67890",
+          user: {
+            name: "Ayo (Employer)",
+            major: "Employer",
+            current_balance: 0,
+            skill_level: "Expert",
+            badges: [],
+            onboardingComplete: true, // <-- Add this flag
+          },
+        });
+      } else {
+        reject(new Error("Invalid username or password."));
+      }
+    }, 1500);
   });
 };
 
@@ -222,6 +243,7 @@ export const signupUser = async (
           current_balance: 0,
           skill_level: "Beginner", // All new users start as beginners
           badges: [],
+          onboardingComplete: false,
         },
       });
     }, 1500); // Simulate a 1.5-second network delay

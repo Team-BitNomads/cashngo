@@ -14,6 +14,7 @@ export interface Badge {
 
 export interface UserProfile {
   name: string;
+  onboardingComplete: boolean;
   major: string;
   current_balance: number;
   badges: Badge[];

@@ -35,14 +35,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  const login = (newToken: string, userData: UserProfile) => {
+  const login = (newToken: string, userData: UserProfile & { onboardingComplete?: boolean }) => {
     setToken(newToken);
     setUser(userData);
     localStorage.setItem('authToken', newToken);
     localStorage.setItem('authUser', JSON.stringify(userData));
-    // On login, navigate to the onboarding page for new users or dashboard for existing ones
-    navigate('/onboarding'); 
-  };
+
+    // CRITICAL FIX: Check if onboarding is complete
+    if (userData.onboardingComplete) {
+      // If complete, go directly to the dashboard
+      navigate('/dashboard');
+    } else {
+      // If not complete (or flag is missing), go to onboarding
+      navigate('/onboarding');
+    }
+};
 
   const logout = () => {
     setToken(null);
