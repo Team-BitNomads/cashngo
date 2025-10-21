@@ -204,7 +204,7 @@ const StudentDashboard: React.FC = () => {
                 asChild
                 className="text-green-400 hover:text-green-400"
               >
-                <NavLink to="/dashboard/gigs">
+                <NavLink to="/gigs">
                   View All <ArrowUpRight className="h-4 w-4 ml-2" />
                 </NavLink>
               </Button>
