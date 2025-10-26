@@ -11,6 +11,7 @@ import DashboardPage from "./pages/DashboardPage"; // <-- IMPORT THE NEW PAGE
 import ProfilePage from "./pages/ProfilePage";
 import GigPage from "./pages/GigPage";
 import PostGigPage from "./pages/PostGigPage"
+import {WalletPage} from "./pages/WalletPage";
 // --- Layout Components ---
 // import Navbar from './components/Navbar';
 
@@ -31,6 +32,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
+      <Route path="/wallet" element={<WalletPage />} />
 <Route path="/gigs" element={<GigPage />} />
       {/* --- Authenticated App Routes --- */}
       <Route path="/dashboard" element={<AppLayout />}>

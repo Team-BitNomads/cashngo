@@ -1531,7 +1531,7 @@ export default function GigPage() {
                               <p className="text-sm font-medium text-slate-400 mb-1">
                                 Cover Letter
                               </p>
-                              <p className="text-gray-900 text-sm bg-slate-800/30 rounded-lg p-3">
+                              <p className="text-slate-300 text-sm bg-slate-800/30 rounded-lg p-3">
                                 {app.coverLetter}
                               </p>
                             </div>
@@ -1870,7 +1870,7 @@ export default function GigPage() {
 
                   <div className="space-y-5">
                     <div>
-                      <label className="text-sm font-semibold text-gray-900 mb-2 block">
+                      <label className="text-sm font-semibold text-slate-300 mb-2 block">
                         Cover Letter <span className="text-red-400">*</span>
                       </label>
                       <Textarea
@@ -1886,7 +1886,7 @@ export default function GigPage() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-semibold text-gray-900 mb-2 block">
+                      <label className="text-sm font-semibold text-slate-300 mb-2 block">
                         Portfolio Link{" "}
                         <span className="text-slate-500">(Optional)</span>
                       </label>
