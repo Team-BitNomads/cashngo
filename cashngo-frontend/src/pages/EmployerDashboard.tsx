@@ -20,10 +20,10 @@ const spendingData = [
     { name: 'Dev', spent: 200 }, { name: 'Marketing', spent: 278 }, { name: 'Admin', spent: 189 },
 ];
 const activeGigs = [
-    { title: 'Advanced Financial Modeling', applicants: 3, budget: '$50.00', status: 'Open' },
-    { title: 'AI Prompt Engineering', applicants: 1, budget: '$40.00', status: 'Open' },
-    { title: 'Social Media Copywriting', applicants: 8, budget: '$25.50', status: 'Reviewing' },
-    { title: 'Brand Logo Design', applicants: 0, budget: '$150.00', status: 'Draft' },
+    { title: 'Advanced Financial Modeling', applicants: 3, budget: '₦25,000.00', status: 'Open' },
+    { title: 'AI Prompt Engineering', applicants: 1, budget: '₦20,000.00', status: 'Open' },
+    { title: 'Social Media Copywriting', applicants: 8, budget: '₦15,000.00', status: 'Reviewing' },
+    { title: 'Brand Logo Design', applicants: 0, budget: '₦45,000.00', status: 'Draft' },
 ];
 
 const EmployerDashboard: React.FC = () => {
@@ -71,7 +71,7 @@ const EmployerDashboard: React.FC = () => {
                                 <CircleDollarSign className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">$450.00</div>
+                                <div className="text-2xl font-bold">₦185,000.00</div>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">This month</p>
                             </CardContent>
                         </Card>

@@ -909,7 +909,7 @@ const categories = [
   "Data",
   "Marketing",
 ];
-const payoutRanges = ["Any", "$0-$500", "$500-$1500", "$1500+"];
+const payoutRanges = ["Any", "₦0-₦20,000", "₦20,000-₦50,000", "₦50,000+"];
 
 // Quiz questions by skill
 const quizQuestions: Record<string, any[]> = {
@@ -1022,11 +1022,11 @@ export default function GigPage() {
       selectedCategory === "All" || gig.category === selectedCategory;
     const matchesPayout =
       selectedPayoutRange === "Any" ||
-      (selectedPayoutRange === "$0-$500" && gig.payout <= 500) ||
-      (selectedPayoutRange === "$500-$1500" &&
-        gig.payout > 500 &&
-        gig.payout <= 1500) ||
-      (selectedPayoutRange === "$1500+" && gig.payout > 1500);
+      (selectedPayoutRange === "₦0-₦20,000" && gig.payout <= 20000) ||
+      (selectedPayoutRange === "₦20,000-₦50,000" &&
+        gig.payout > 20000 &&
+        gig.payout <= 50000) ||
+      (selectedPayoutRange === "₦50,000+" && gig.payout > 50000);
 
     return (
       matchesSearch && matchesCategory && matchesPayout && !gig.isFeatured

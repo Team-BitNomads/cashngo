@@ -74,7 +74,7 @@ const StudentDashboard: React.FC = () => {
                 <Wallet className="h-4 w-4 text-green-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-green-400">$100.00</div>
+                <div className="text-3xl font-bold text-green-400">₦45,000.00</div>
                 <p className="text-xs text-slate-500">+15% from last month</p>
               </CardContent>
             </Card>
