@@ -7,25 +7,25 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   LayoutDashboard,
-  Wallet, // Keep Wallet icon
-  // BarChart3, 
+  Wallet,
   Settings,
   LogOut,
   Search,
-  Briefcase, // Keep Briefcase for consistency if needed elsewhere
-  // Users,  // Keep Users for consistency if needed elsewhere
-  Menu,     // <-- Import Menu icon for mobile toggle
-  X         // <-- Import X icon for mobile close
+  Briefcase,
+  // Users,    // Keep for potential future use or consistency
+  Menu,     // Mobile toggle
+  X,        // Mobile close
+  GraduationCap, // <-- Import GraduationCap icon for Learn Skills
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// --- Keep STUDENT nav items here, Wallet included ---
+// --- Student nav items with Learn Skills added ---
 const studentNavItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Gigs", href: "/gigs", icon: Briefcase }, // Use Briefcase for consistency
-  { name: "Wallet", href: "/wallet", icon: Wallet }, // Added Wallet link
-  // { name: "Reports", href: "/dashboard/reports", icon: BarChart3 }, // Reports might be student-relevant? Keep commented for now.
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Gigs", href: "/gigs", icon: Briefcase },
+  { name: "Wallet", href: "/wallet", icon: Wallet },
+  { name: "Learn Skills", href: "/learn", icon: GraduationCap }, // <-- Added Learn Skills link
+  { name: "Settings", href: "/settings", icon: Settings }, // Updated href for clarity
 ];
 
 
@@ -220,7 +220,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 <Input
                   type="search"
                   placeholder="Search for gigs..." // Student context
-                  value={searchTerm}
+                  value={searchTerm ?? ''} // Ensure value is controlled even if undefined initially
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 bg-slate-800 border-slate-700 text-white"
                 />

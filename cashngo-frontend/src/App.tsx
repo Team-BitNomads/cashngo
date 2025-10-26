@@ -10,8 +10,10 @@ import OnboardingPage from "./pages/OnboardingPage";
 import DashboardPage from "./pages/DashboardPage"; // <-- IMPORT THE NEW PAGE
 import ProfilePage from "./pages/ProfilePage";
 import GigPage from "./pages/GigPage";
-import PostGigPage from "./pages/PostGigPage"
-import {WalletPage} from "./pages/WalletPage";
+import PostGigPage from "./pages/PostGigPage";
+import { WalletPage } from "./pages/WalletPage";
+import { LearnSkillsPage } from "./pages/LearnSkillsPage";
+import { CoursePlayerPage } from "./pages/CoursePlayerPage";
 // --- Layout Components ---
 // import Navbar from './components/Navbar';
 
@@ -33,7 +35,9 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/wallet" element={<WalletPage />} />
-<Route path="/gigs" element={<GigPage />} />
+      <Route path="/learn" element={<LearnSkillsPage />} />
+      <Route path="/learn/player/:courseId" element={<CoursePlayerPage />} />
+      <Route path="/gigs" element={<GigPage />} />
       {/* --- Authenticated App Routes --- */}
       <Route path="/dashboard" element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
