@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   LineChart,
   Line,
@@ -12,7 +12,6 @@ import {
   Cell,
 } from "recharts";
 import { NavLink } from "react-router-dom";
-
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
@@ -23,105 +22,39 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
-  ArrowUpRight,
+  // ArrowUpRight,
   Lock,
   Wallet,
   CheckCircle,
   BarChart3,
+  Briefcase,
 } from "lucide-react";
 
+// --- Mock Data for Charts ---
 const earningsData = [
-  { name: "Jan", earnings: 180 },
-  { name: "Feb", earnings: 220 },
-  { name: "Mar", earnings: 200 },
-  { name: "Apr", earnings: 280 },
+  { name: "Apr", earnings: 200 },
   { name: "May", earnings: 260 },
   { name: "Jun", earnings: 320 },
   { name: "Jul", earnings: 300 },
+  { name: "Aug", earnings: 350 },
+  { name: "Sep", earnings: 400 },
+  { name: "Oct", earnings: 380 },
 ];
 const categoryData = [
-  { name: "Data Entry", value: 450 },
-  { name: "Social Media", value: 300 },
-  { name: "Copywriting", value: 200 },
+  { name: "Development", value: 450 },
+  { name: "Design", value: 300 },
+  { name: "Writing", value: 200 },
   { name: "Other", value: 189 },
 ];
 const COLORS = ["#06b6d4", "#8b5cf6", "#ec4899", "#f59e0b"]; // Cyan, Purple, Pink, Orange
-const allAvailableGigs = [
-  {
-    title: "Social Media Content Creation",
-    payout: 25,
-    skill: "Canva Basics",
-    company: "Innovate Inc.",
-  },
-  {
-    title: "Transcribe Audio Interview",
-    payout: 15,
-    skill: "Fast Typing",
-    company: "Media Group",
-  },
-  {
-    title: "User Testing for Mobile App",
-    payout: 30,
-    skill: "Attention to Detail",
-    company: "Appify Ltd.",
-  },
-  {
-    title: "Data Cleaning in Excel",
-    payout: 20,
-    skill: "Excel Basics",
-    company: "Data Solutions",
-  },
-];
-const allLockedGigs = [
-  {
-    title: "Advanced Financial Modeling",
-    payout: 75,
-    skill: "Python/SQL",
-    company: "Fintech Solutions",
-  },
-  {
-    title: "AI Prompt Engineering",
-    payout: 50,
-    skill: "Creative Writing",
-    company: "Future AI",
-  },
-  {
-    title: "React Component Development",
-    payout: 120,
-    skill: "React.js",
-    company: "DevHouse",
-  },
-  {
-    title: "SEO Keyword Research",
-    payout: 60,
-    skill: "SEO Tools",
-    company: "RankUp",
-  },
-];
 
 const StudentDashboard: React.FC = () => {
+  // The dashboard (overview) page doesn't need search functionality
+  // We pass empty values to the layout, which will still render the search bar
+  // but it will be non-functional on this specific page.
+  // The GigPage will handle the real search state.
   const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredAvailableGigs = useMemo(
-    () =>
-      allAvailableGigs.filter(
-        (gig) =>
-          gig.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          gig.company.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    [searchTerm]
-  );
-  const filteredLockedGigs = useMemo(
-    () =>
-      allLockedGigs.filter(
-        (gig) =>
-          gig.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          gig.company.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    [searchTerm]
-  );
 
   return (
     <DashboardLayout
@@ -130,42 +63,45 @@ const StudentDashboard: React.FC = () => {
       setSearchTerm={setSearchTerm}
     >
       <div className="space-y-10">
+        {/* --- Top Stat Cards --- */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatedSection delay="delay-100">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-400">
                   Available Balance
                 </CardTitle>
-                <Wallet className="h-4 w-4 text-slate-400" />
+                <Wallet className="h-4 w-4 text-green-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-green-400">$84.50</div>
+                <div className="text-3xl font-bold text-green-400">$100.00</div>
                 <p className="text-xs text-slate-500">+15% from last month</p>
               </CardContent>
             </Card>
           </AnimatedSection>
+
           <AnimatedSection delay="delay-200">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-400">
                   Gigs Completed
                 </CardTitle>
-                <CheckCircle className="h-4 w-4 text-slate-400" />
+                <CheckCircle className="h-4 w-4 text-green-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-white">12</div>
+                <div className="text-3xl font-bold text-white">5</div>
                 <p className="text-xs text-slate-500">+2 from last month</p>
               </CardContent>
             </Card>
           </AnimatedSection>
+
           <AnimatedSection delay="delay-300">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-400">
                   Skill Level
                 </CardTitle>
-                <BarChart3 className="h-4 w-4 text-slate-400" />
+                <BarChart3 className="h-4 w-4 text-cyan-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-white">
@@ -175,16 +111,17 @@ const StudentDashboard: React.FC = () => {
               </CardContent>
             </Card>
           </AnimatedSection>
+
           <AnimatedSection delay="delay-400">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-400">
-                  Jobs to Unlock
+                  Gigs to Unlock
                 </CardTitle>
-                <Lock className="h-4 w-4 text-slate-400" />
+                <Lock className="h-4 w-4 text-cyan-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-white">4</div>
+                <div className="text-3xl font-bold text-white">3</div>
                 <p className="text-xs text-slate-500">
                   High-paying opportunities
                 </p>
@@ -193,109 +130,38 @@ const StudentDashboard: React.FC = () => {
           </AnimatedSection>
         </div>
 
-        <div className="space-y-10">
-          <AnimatedSection>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-slate-100">
-                Available Gigs
-              </h2>
-              <Button
-                variant="ghost"
-                asChild
-                className="text-green-400 hover:text-green-400"
-              >
-                <NavLink to="/gigs">
-                  View All <ArrowUpRight className="h-4 w-4 ml-2" />
-                </NavLink>
-              </Button>
+        {/* --- "Find Gigs" Call-to-Action --- */}
+        <AnimatedSection delay="delay-200">
+          <Card className="bg-slate-900/60 border border-green-500/30 backdrop-blur-sm shadow-lg shadow-green-500/10 overflow-hidden relative flex flex-col md:flex-row items-center justify-between p-6 gap-6">
+            <div className="z-10">
+              <h3 className="text-2xl font-bold text-white">
+                Find Your Next Gig
+              </h3>
+              <p className="text-slate-400 max-w-lg mt-2">
+                Browse, search, and filter through all available gigs. Take
+                skill quizzes to unlock higher-paying opportunities.
+              </p>
             </div>
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredAvailableGigs.map((gig) => (
-                <Card
-                  key={gig.title}
-                  className="relative bg-slate-900 border-slate-800 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 glow-on-hover"
-                >
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <p className="text-sm text-slate-400">{gig.company}</p>
-                      <Badge
-                        variant="outline"
-                        className="border-green-500 text-green-400"
-                      >
-                        New
-                      </Badge>
-                    </div>
-                    <h3 className="text-xl font-bold text-white mt-2">
-                      {gig.title}
-                    </h3>
-                    <p className="text-sm text-slate-400 mt-1">
-                      Required Skill: {gig.skill}
-                    </p>
-                  </div>
-                  <div className="flex items-end justify-between mt-6">
-                    <div>
-                      <p className="text-sm text-slate-500">Payout</p>
-                      <p className="text-2xl font-bold text-green-400">
-                        ${gig.payout.toFixed(2)}
-                      </p>
-                    </div>
-                    <Button className="bg-green-500 hover:bg-green-600 text-slate-900 font-bold">
-                      Apply Now
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </AnimatedSection>
+            <Button
+              asChild
+              className="bg-green-500 text-slate-950 font-bold hover:bg-green-400 focus:ring-2 focus:ring-green-300 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ease-in-out shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] z-10 w-full md:w-auto flex-shrink-0"
+            >
+              <NavLink to="/gigs">
+                <Briefcase className="h-4 w-4 mr-2" />
+                Browse All Gigs
+              </NavLink>
+            </Button>
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-to-r from-transparent via-green-500/10 to-transparent opacity-30 animate-spin-slow" />
+          </Card>
+        </AnimatedSection>
 
-          <AnimatedSection>
-            <h2 className="text-2xl font-bold text-slate-100">
-              Unlock Higher Pay with Skill-Synth
-            </h2>
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredLockedGigs.map((gig) => (
-                <Card
-                  key={gig.title}
-                  className="relative bg-slate-900 border-slate-800 p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 glow-on-hover"
-                >
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <p className="text-sm text-slate-400">{gig.company}</p>
-                      <Lock className="h-5 w-5 text-slate-500" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mt-2">
-                      {gig.title}
-                    </h3>
-                    <p className="text-sm text-slate-400 mt-1">
-                      Required Skill: {gig.skill}
-                    </p>
-                  </div>
-                  <div className="flex items-end justify-between mt-6">
-                    <div>
-                      <p className="text-sm text-slate-500">Payout</p>
-                      <p className="text-2xl font-bold text-cyan-400">
-                        ${gig.payout.toFixed(2)}
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-400"
-                    >
-                      Take Quiz to Unlock
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-
+        {/* --- Charts Section --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <AnimatedSection delay="delay-100" className="lg:col-span-2">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader>
                 <CardTitle className="text-white">Earnings Trend</CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-500">
                   Your earnings over the last 7 months.
                 </CardDescription>
               </CardHeader>
@@ -348,6 +214,7 @@ const StudentDashboard: React.FC = () => {
                         backgroundColor: "#0f172a",
                         border: "1px solid #334155",
                         color: "#e2e8f0",
+                        borderRadius: "8px",
                       }}
                       cursor={{ stroke: "#334155" }}
                     />
@@ -357,20 +224,26 @@ const StudentDashboard: React.FC = () => {
                       stroke="#10b981"
                       strokeWidth={2}
                       dot={false}
-                      activeDot={{ r: 8, fill: "#10b981", stroke: "#fff" }}
+                      activeDot={{
+                        r: 8,
+                        fill: "#10b981",
+                        stroke: "#0f172a",
+                        strokeWidth: 2,
+                      }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </AnimatedSection>
+
           <AnimatedSection delay="delay-200">
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
               <CardHeader>
                 <CardTitle className="text-white">
                   Earnings by Category
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-500">
                   How your income is distributed.
                 </CardDescription>
               </CardHeader>
@@ -382,6 +255,7 @@ const StudentDashboard: React.FC = () => {
                         backgroundColor: "#0f172a",
                         border: "1px solid #334155",
                         color: "#e2e8f0",
+                        borderRadius: "8px",
                       }}
                     />
                     <Pie
@@ -409,6 +283,19 @@ const StudentDashboard: React.FC = () => {
           </AnimatedSection>
         </div>
       </div>
+      <style>{`
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
+        }
+      `}</style>
     </DashboardLayout>
   );
 };

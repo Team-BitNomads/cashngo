@@ -1,163 +1,195 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import AnimatedSection from "@/components/AnimatedSection";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  User,
+  Mail,
+  GraduationCap,
+  // BadgeCheck,
+  Award,
+  Star,
+  type LucideIcon, // Import the LucideIcon type
+} from "lucide-react";
 
-// --- Type Imports ---
-import type { UserProfile, Quiz } from '../types';
+// --- 1. NEW: Local type for Badge DISPLAY ---
+// This prevents conflict with the `Badge` type from `types.ts`
+type BadgeDisplayInfo = {
+  id: number;
+  name: string;
+  icon: LucideIcon; // Use the imported LucideIcon type
+  color: string;
+  bgColor: string;
+  borderColor: string;
+};
 
-// --- API Service Imports ---
-import { fetchUserProfile, generateQuiz, submitQuiz } from '../services/api';
+// Mock data for earned badges
+// Use the new BadgeDisplayInfo type
+const mockBadges: BadgeDisplayInfo[] = [
+  {
+    id: 1,
+    name: "React Basics",
+    icon: Star,
+    color: "text-cyan-400",
+    bgColor: "bg-cyan-900/50",
+    borderColor: "border-cyan-500/30",
+  },
+  {
+    id: 2,
+    name: "Excel Formulas",
+    icon: Award,
+    color: "text-green-400",
+    bgColor: "bg-green-900/50",
+    borderColor: "border-green-500/30",
+  },
+  {
+    id: 3,
+    name: "Canva Design",
+    icon: Award,
+    color: "text-pink-400",
+    bgColor: "bg-pink-900/50",
+    borderColor: "border-pink-500/30",
+  },
+  {
+    id: 4,
+    name: "Fast Typing",
+    icon: Star,
+    color: "text-purple-400",
+    bgColor: "bg-purple-900/50",
+    borderColor: "border-purple-500/30",
+  },
+  {
+    id: 5,
+    name: "SEO Fundamentals",
+    icon: Award,
+    color: "text-yellow-400",
+    bgColor: "bg-yellow-900/50",
+    borderColor: "border-yellow-500/30",
+  },
+  {
+    id: 6,
+    name: "Python (Basic)",
+    icon: Star,
+    color: "text-blue-400",
+    bgColor: "bg-blue-900/50",
+    borderColor: "border-blue-500/30",
+  },
+];
 
-// --- Component Imports ---
-import UnlockGigsButton from '../components/UnlockGigsButton';
-import QuizModal from '../components/QuizModal';
-
+// --- 2. The Page Component ---
 const ProfilePage: React.FC = () => {
-  const navigate = useNavigate();
-
-  // --- State Management ---
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // State specifically for the Skill-Synth quiz flow
-  const [isQuizLoading, setIsQuizLoading] = useState(false);
-  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
-  const [quizData, setQuizData] = useState<Quiz | null>(null);
-
-  /**
-   * Fetches the user's profile from the API and updates the state.
-   * Using useCallback to memoize the function so it can be used in useEffect dependencies
-   * without causing infinite loops.
-   */
-  const loadProfile = useCallback(async () => {
-    try {
-      const data = await fetchUserProfile();
-      setProfile(data);
-    } catch (error) {
-      console.error("Failed to load profile", error);
-      // Optional: handle error, e.g., show an error message
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Initial data fetch when the component mounts
-  useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
-
-  /**
-   * Handles the click event from the "Unlock High-Value Gigs" button.
-   * It fetches a new quiz and opens the modal.
-   */
-  const handleUnlockClick = async () => {
-    setIsQuizLoading(true);
-    const quiz = await generateQuiz();
-    setQuizData(quiz);
-    setIsQuizModalOpen(true);
-    setIsQuizLoading(false);
-  };
-  
-  /**
-   * Handles the submission of the quiz from the QuizModal component.
-   * This is the final step in the "winning feature" loop.
-   */
-  const handleQuizSubmit = async (answers: number[]) => {
-    if (!quizData) return;
-
-    // 1. Submit the answers to the backend
-    const result = await submitQuiz(quizData.quiz_id, answers);
-
-    // 2. Close the quiz modal
-    setIsQuizModalOpen(false);
-    setQuizData(null);
-
-    // 3. Handle the result
-    if (result.success && result.new_badge) {
-      // 4. Show immediate, satisfying feedback
-      alert(`Congratulations! You've earned the "${result.new_badge.name}" badge and unlocked new gigs!`);
-      
-      // 5. CRITICAL: Re-fetch the user's profile to show the new badge instantly
-      await loadProfile();
-
-      // 6. Navigate to the gig feed so the user can see the unlocked gigs
-      navigate('/dashboard');
-    } else {
-      alert("Good try! You didn't pass this time. Feel free to try another quiz later.");
-    }
-  };
-
-  // --- Render Logic ---
-
-  if (isLoading || !profile) {
-    return <div className="text-center p-8">Loading profile...</div>;
-  }
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = React.useState(""); // Stub for layout
 
   return (
-    <>
-      <div className="bg-gray-50 min-h-screen p-4 sm:p-6 md:p-8">
-        <div className="max-w-4xl mx-auto">
-          
-          {/* --- Profile Header Card --- */}
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
-                <p className="text-gray-600">{profile.major}</p>
+    <DashboardLayout
+      title="My Profile"
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* --- Left Column: User Details --- */}
+        <AnimatedSection delay="delay-100" className="lg:col-span-1">
+          <Card className="bg-slate-900/60 border border-green-500/30 backdrop-blur-sm shadow-lg shadow-green-500/10 h-full">
+            <CardHeader className="items-center text-center">
+              <Avatar className="h-24 w-24 border-4 border-green-500/50">
+                <AvatarImage
+                  src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${
+                    user?.name || "User"
+                  }`}
+                />
+                <AvatarFallback className="text-3xl bg-slate-800">
+                  {user?.name?.[0] || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400 pt-4">
+                {user?.name || "Student User"}
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                <Badge
+                  variant="outline"
+                  className="border-green-500 text-green-400 font-bold"
+                >
+                  <Badge className="w-4 h-4 mr-1.5" />
+                  Verified Student
+                </Badge>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-4">
+              <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                <Mail className="w-5 h-5 text-green-400" />
+                <span className="text-slate-300 text-sm">
+                  {user?.email || "student@cashngo.com"}
+                </span>
               </div>
-              <div className="text-center flex-shrink-0 ml-4">
-                <div className="text-2xl font-bold text-yellow-500" title={`Skill Level ${(profile as any).skill_level} out of 5`}>
-                  {'★'.repeat((profile as any).skill_level || 0).padEnd(5, '☆')}
-                </div>
-                <p className="text-xs font-semibold text-gray-600">Verified Skill Level</p>
+              <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                <User className="w-5 h-5 text-green-400" />
+                <span className="text-slate-300 text-sm">
+                  {user?.username || "student_user"}
+                </span>
               </div>
-            </div>
-            <div className="text-4xl font-bold text-green-600">
-              ${profile.current_balance.toFixed(2)}
-              <span className="text-lg font-medium text-gray-500"> Current Balance</span>
-            </div>
-          </div>
+              <div className="flex items-center gap-3 bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                <GraduationCap className="w-5 h-5 text-green-400" />
+                <span className="text-slate-300 text-sm">
+                  {user?.major || "Computer Science"}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </AnimatedSection>
 
-          {/* --- Skill-Synth Trigger Card --- */}
-          <div className="mb-6">
-            <UnlockGigsButton 
-              onClick={handleUnlockClick} 
-              isLoading={isQuizLoading}
-            />
-          </div>
-
-          {/* --- Badges Section Card --- */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">My Badges</h2>
-            {profile.badges && profile.badges.length > 0 ? (
-              <div className="flex flex-wrap gap-4">
-                {profile.badges.map(badge => (
-                  <div key={badge.id} className="text-center">
-                    <div className="bg-gray-200 p-3 rounded-full w-20 h-20 flex items-center justify-center">
-                      <span className="text-3xl" title={badge.name}>🏆</span>
+        {/* --- Right Column: Earned Badges --- */}
+        <AnimatedSection delay="delay-200" className="lg:col-span-2">
+          <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-white flex items-center gap-2">
+                <Award className="w-6 h-6 text-green-400" />
+                My Skill Badges
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                All skills you've verified through Skill-Synth quizzes.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {mockBadges.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {mockBadges.map((badge) => (
+                    <div
+                      key={badge.id}
+                      className={`flex flex-col items-center justify-center p-4 rounded-lg border ${badge.borderColor} ${badge.bgColor} transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-1`}
+                    >
+                      <badge.icon
+                        className={`w-10 h-10 ${badge.color} mb-2`}
+                        strokeWidth={1.5}
+                      />
+                      <span className="text-sm font-medium text-slate-200 text-center">
+                        {badge.name}
+                      </span>
                     </div>
-                    <p className="text-sm mt-2 text-gray-700 w-20 truncate">{badge.name}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No badges yet. Unlock some gigs to earn your first one!</p>
-            )}
-          </div>
-
-        </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-slate-700 rounded-lg">
+                  <p className="text-slate-400">No badges earned yet.</p>
+                  <p className="text-slate-500 text-sm">
+                    Go to the Gigs page to unlock new skills!
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </AnimatedSection>
       </div>
-      
-      {/* --- Quiz Modal --- */}
-      {/* This is rendered outside the main layout div to overlay the whole screen */}
-      {isQuizModalOpen && quizData && (
-        <QuizModal 
-          quiz={quizData} 
-          onClose={() => setIsQuizModalOpen(false)}
-          onSubmit={handleQuizSubmit}
-        />
-      )}
-    </>
+    </DashboardLayout>
   );
 };
 

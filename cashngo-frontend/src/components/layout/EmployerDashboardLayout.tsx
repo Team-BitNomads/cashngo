@@ -6,33 +6,31 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   LayoutDashboard,
-  // Wallet, 
-  // BarChart3, 
   Settings,
   LogOut,
   Search,
-  Briefcase, // <-- Import Briefcase icon
-  Users, // <-- Import Users icon
+  Briefcase,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// --- UPDATED: Employer-specific nav items ---
+// --- Employer-specific nav items ---
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "My Gigs", href: "/gigs", icon: Briefcase }, // Changed from Wallet to Briefcase
-  { name: "Applicants", href: "/dashboard/applicants", icon: Users }, // Changed from Reports
+  { name: "My Gigs", href: "/gigs", icon: Briefcase },
+  { name: "Applicants", href: "/dashboard/applicants", icon: Users },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-interface DashboardLayoutProps {
+interface EmployerDashboardLayoutProps {
   children: React.ReactNode;
   title: string;
-  // Make search optional for pages that don't need it (like PostGigPage)
+  // Search is now specific to employers
   searchTerm?: string;
   setSearchTerm?: (term: string) => void;
 }
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+export const EmployerDashboardLayout: React.FC<EmployerDashboardLayoutProps> = ({
   children,
   title,
   searchTerm,
@@ -48,17 +46,15 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         onMouseLeave={() => setIsSidebarExpanded(false)}
         className={cn(
           "hidden lg:flex flex-col border-r border-slate-800 bg-slate-900 transition-all duration-300 ease-in-out",
-          // --- CHANGED: Added fixed positioning ---
-          "fixed top-0 left-0 h-screen z-40",
+          "fixed top-0 left-0 h-screen z-40", // Fixed sidebar
           isSidebarExpanded ? "w-64" : "w-20"
         )}
       >
         <div className="flex h-20 items-center px-6 border-b border-slate-800">
           <NavLink
             to="/dashboard"
-            className="flex items-center gap-3 font-bold text-lg text-cyan-400 overflow-hidden" // <-- Changed to cyan for employer
+            className="flex items-center gap-3 font-bold text-lg text-cyan-400 overflow-hidden" // Cyan theme
           >
-            {/* --- Changed to cyan for employer --- */}
             <div className="h-8 w-8 bg-cyan-500 rounded-lg flex-shrink-0" />
             <span
               className={cn(
@@ -80,8 +76,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 cn(
                   "flex items-center gap-4 rounded-lg px-4 py-3 transition-colors duration-200 overflow-hidden",
                   isActive
-                    // --- Changed to cyan for employer ---
-                    ? "bg-cyan-500 text-slate-900 font-semibold"
+                    ? "bg-cyan-500 text-slate-900 font-semibold" // Cyan theme
                     : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 )
               }
@@ -117,7 +112,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </aside>
 
-      {/* --- CHANGED: Added dynamic margin-left to offset fixed sidebar --- */}
+      {/* Dynamic margin-left to offset fixed sidebar */}
       <div
         className={cn(
           "flex flex-col flex-1 transition-all duration-300 ease-in-out",
@@ -127,14 +122,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <header className="flex h-20 items-center gap-4 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm px-6 sticky top-0 z-30">
           <h1 className="text-3xl font-bold text-slate-100">{title}</h1>
           
-          {/* --- Conditionally render search bar --- */}
+          {/* Employer-specific search bar */}
           {setSearchTerm && (
             <div className="flex-1 ml-auto max-w-sm">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                 <Input
                   type="search"
-                  placeholder="Search for gigs..."
+                  placeholder="Search for applicants..." // <-- UPDATED
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 bg-slate-800 border-slate-700 text-white"
@@ -143,7 +138,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           )}
 
-          {/* --- This section is fine, user prop is generic --- */}
           <div className="flex items-center gap-4 ml-auto">
             <Avatar className="h-10 w-10">
               <AvatarImage
@@ -158,7 +152,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 {user?.name || "Employer"}
               </p>
               <p className="text-xs text-slate-400">
-                {/* Changed "major" to "company" for employer context */}
                 {user?.major || "Company"}
               </p>
             </div>

@@ -10,7 +10,7 @@ import OnboardingPage from "./pages/OnboardingPage";
 import DashboardPage from "./pages/DashboardPage"; // <-- IMPORT THE NEW PAGE
 import ProfilePage from "./pages/ProfilePage";
 import GigPage from "./pages/GigPage";
-
+import PostGigPage from "./pages/PostGigPage"
 // --- Layout Components ---
 // import Navbar from './components/Navbar';
 
@@ -34,16 +34,9 @@ function App() {
 <Route path="/gigs" element={<GigPage />} />
       {/* --- Authenticated App Routes --- */}
       <Route path="/dashboard" element={<AppLayout />}>
-        
-        {/*
-          CRITICAL CHANGE:
-          The index route now points to our smart DashboardPage router.
-          It will decide whether to show the Student or Employer dashboard.
-        */}
         <Route index element={<DashboardPage />} />
-
-        {/* Other authenticated routes like the profile page remain the same */}
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="postgig" element={<PostGigPage />} />
       </Route>
     </Routes>
   );
