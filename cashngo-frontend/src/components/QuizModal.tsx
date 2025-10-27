@@ -1,66 +1,156 @@
 import React, { useState } from 'react';
-import type { Quiz } from '../types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Brain } from 'lucide-react';
+import type { QuizModalProps } from '@/types/quiz';
 
-interface QuizModalProps {
-  quiz: Quiz;
-  onClose: () => void;
-  onSubmit: (answers: number[]) => void;
-}
+// Sample quiz questions (in a real app, these would come from an API)
+const QUIZ_QUESTIONS = [
+  {
+    text: "Which of these best describes a 'function' in programming?",
+    options: [
+      "A container for storing data",
+      "A reusable block of code that performs a specific task",
+      "A way to style web pages",
+      "A type of variable"
+    ],
+    correctAnswer: 1
+  },
+  {
+    text: "What does HTML stand for?",
+    options: [
+      "Hyper Text Markup Language",
+      "High Tech Modern Language",
+      "Hyper Transfer Markup Logic",
+      "Home Tool Markup Language"
+    ],
+    correctAnswer: 0
+  },
+  {
+    text: "What is the purpose of CSS in web development?",
+    options: [
+      "To create interactive features",
+      "To store data",
+      "To style and layout web pages",
+      "To handle server operations"
+    ],
+    correctAnswer: 2
+  }
+];
 
-const QuizModal: React.FC<QuizModalProps> = ({ quiz, onClose, onSubmit }) => {
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(Array(quiz.questions.length).fill(-1));
+export const QuizModal: React.FC<QuizModalProps> = ({ isOpen, onClose, onComplete }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
 
-  const handleAnswerSelect = (questionIndex: number, optionIndex: number) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAnswerSelect = (answerIndex: number) => {
     const newAnswers = [...selectedAnswers];
-    newAnswers[questionIndex] = optionIndex;
+    newAnswers[currentQuestion] = answerIndex;
     setSelectedAnswers(newAnswers);
   };
 
-  const handleSubmit = () => {
-    // In a real app, you'd check if all questions are answered
-    onSubmit(selectedAnswers);
+  const handleNext = () => {
+    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      handleSubmit();
+    }
   };
 
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    // Calculate score
+    const correctAnswers = QUIZ_QUESTIONS.filter(
+      (q, i) => q.correctAnswer === selectedAnswers[i]
+    ).length;
+    const percentageCorrect = (correctAnswers / QUIZ_QUESTIONS.length) * 100;
+    
+    // Consider 70% as passing score
+    const passed = percentageCorrect >= 70;
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      onComplete(passed);
+      setIsSubmitting(false);
+      setCurrentQuestion(0);
+      setSelectedAnswers([]);
+    }, 1000);
+  };
+
+  const question = QUIZ_QUESTIONS[currentQuestion];
+  const hasAnswered = selectedAnswers[currentQuestion] !== undefined;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-2xl transform transition-all">
-        <div className="flex justify-between items-center border-b pb-3 mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Skill Quiz: <span className="text-green-600">{quiz.skill_name}</span>
-          </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">&times;</button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={() => {
+      if (!isSubmitting) onClose();
+    }}>
+      <DialogContent className="max-w-2xl bg-slate-900 border-slate-800">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+            <Brain className="h-6 w-6 text-cyan-400" />
+            General Skills Assessment
+          </DialogTitle>
+        </DialogHeader>
 
-        <div className="space-y-6">
-          {quiz.questions.map((q, qIndex) => (
-            <div key={qIndex}>
-              <p className="font-semibold text-lg">{qIndex + 1}. {q.text}</p>
-              <div className="mt-2 space-y-2">
-                {q.options.map((option, oIndex) => (
-                  <label key={oIndex} className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedAnswers[qIndex] === oIndex ? 'bg-green-100 border-green-500' : 'border-gray-200 hover:border-green-300'}`}>
-                    <input
-                      type="radio"
-                      name={`question-${qIndex}`}
-                      checked={selectedAnswers[qIndex] === oIndex}
-                      onChange={() => handleAnswerSelect(qIndex, oIndex)}
-                      className="hidden"
-                    />
-                    <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mr-3 ${selectedAnswers[qIndex] === oIndex ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}></span>
-                    {option}
-                  </label>
-                ))}
-              </div>
+        <div className="mt-4">
+          {/* Progress indicator */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-sm text-slate-400">
+              Question {currentQuestion + 1} of {QUIZ_QUESTIONS.length}
             </div>
-          ))}
-        </div>
+            <div className="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div 
+                className={`h-full bg-cyan-500 quiz-progress-bar`}
+                style={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
+              />
+            </div>
+          </div>
 
-        <div className="mt-8 border-t pt-4 flex justify-end">
-          <button onClick={handleSubmit} className="px-6 py-2 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-700">
-            Submit Answers
-          </button>
+          {/* Question */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium text-white mb-4">
+              {question.text}
+            </h3>
+            <div className="space-y-3">
+              {question.options.map((option, index) => (
+                <button
+                  key={index}
+                  className={`w-full text-left p-4 rounded-lg border transition-all ${
+                    selectedAnswers[currentQuestion] === index
+                      ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                      : 'border-slate-700 hover:border-slate-600 text-slate-300 hover:bg-slate-800/50'
+                  }`}
+                  onClick={() => handleAnswerSelect(index)}
+                  disabled={isSubmitting}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-end mt-6 pt-6 border-t border-slate-800">
+            <Button
+              onClick={handleNext}
+              disabled={!hasAnswered || isSubmitting}
+              className="px-8 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center">
+                  Processing...
+                </span>
+              ) : currentQuestion === QUIZ_QUESTIONS.length - 1 ? (
+                'Submit'
+              ) : (
+                'Next Question'
+              )}
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

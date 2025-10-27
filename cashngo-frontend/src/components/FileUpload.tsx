@@ -1,72 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Upload, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface FileUploadProps {
-  onUploadComplete: () => void;
+interface FileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  id: string;
+  accept?: string;
+  helperText?: string;
+  error?: string;
+  onFileSelect: (file: File | null) => void; // Callback with the selected file
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<'idle' | 'uploading' | 'success'>('idle');
+export const FileUpload: React.FC<FileUploadProps> = ({
+  label,
+  id,
+  accept = "image/*,application/pdf",
+  helperText,
+  error,
+  className,
+  onFileSelect,
+  ...props
+}) => {
+  const [fileName, setFileName] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
-    }
+    const file = event.target.files?.[0] || null;
+    setFileName(file ? file.name : null);
+    onFileSelect(file); // Call the parent callback
   };
 
-  const handleUpload = async () => {
-    if (!file) return;
-
-    setStatus('uploading');
-
-    // --- REAL API CALL ---
-    // Here you would use axios to post to '/api/users/skill-verification'
-    // const formData = new FormData();
-    // formData.append('skillFile', file);
-    // await apiClient.post('/users/skill-verification', formData);
-    
-    // --- HACKATHON SIMULATION ---
-    // We'll simulate the upload time.
-    setTimeout(() => {
-      setStatus('success');
-      // Let the parent page know the upload is "done".
-      onUploadComplete();
-    }, 2000); // 2 seconds
+  const triggerFileInput = () => {
+    inputRef.current?.click();
   };
 
   return (
-    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full">
-      <input type="file" id="file-upload" className="hidden" onChange={handleFileChange} />
-      
-      {!file && (
-        <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center space-y-2">
-          <span className="text-4xl">📄</span>
-          <span className="font-semibold text-green-600">Click to browse</span>
-          <span className="text-sm text-gray-500">or drag and drop</span>
-          <span className="text-xs text-gray-400">PDF, JPG, PNG, MP4 (max 10MB)</span>
-        </label>
-      )}
-
-      {file && status !== 'success' && (
-        <div className="text-center">
-          <p className="font-semibold mb-4">{file.name}</p>
-          <button
-            onClick={handleUpload}
-            disabled={status === 'uploading'}
-            className="w-full bg-gray-900 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 disabled:bg-gray-400"
-          >
-            {status === 'uploading' ? 'Uploading...' : 'Upload and Verify'}
-          </button>
+    <div className={cn("space-y-2", className)}>
+      <Label htmlFor={id} className="text-gray-100">{label}</Label>
+      <div className="flex items-center gap-3">
+        <Button
+            type="button"
+            variant="outline"
+            onClick={triggerFileInput}
+            className="bg-slate-800/50 border-slate-700 hover:bg-slate-700/50 text-slate-300"
+        >
+          <Upload className="h-4 w-4 mr-2" />
+          Choose File
+        </Button>
+         <div className="flex-1 min-w-0">
+            {fileName ? (
+                <div className="flex items-center gap-2 text-sm text-green-400">
+                    <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{fileName}</span>
+                </div>
+            ) : (
+                <span className="text-sm text-slate-500">No file selected</span>
+            )}
         </div>
-      )}
-      
-      {status === 'success' && (
-          <div className="text-center text-green-600 font-bold">
-              <p>✅ Upload Successful!</p>
-          </div>
-      )}
+      </div>
+       {/* Hidden actual file input */}
+      <Input
+        ref={inputRef}
+        id={id}
+        type="file"
+        accept={accept}
+        onChange={handleFileChange}
+        className="hidden" // Keep hidden, triggered by button
+        {...props} // Pass through register etc.
+      />
+      {helperText && !error && <p className="text-xs text-slate-500">{helperText}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
     </div>
   );
 };
 
-export default FileUpload;
+export default FileUpload

@@ -223,3 +223,15 @@
 ::-webkit-scrollbar-corner {
   background: #1e293b; /* slate-800 */
 }
+
+/* Quiz Progress Bar */
+.quiz-progress-bar {
+  transition: width 300ms ease-in-out;
+}
+
+/* Onboarding Page Background */
+.bg-onboarding {
+  background-image: url('/onboarding-bg.png');
+  background-size: cover;
+  background-position: center;
+}

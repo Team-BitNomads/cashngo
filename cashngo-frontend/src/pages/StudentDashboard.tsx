@@ -31,9 +31,11 @@ import {
   BarChart3,
   Briefcase,
   ArrowUpRight, // Added for Withdraw button
-  // Star,         // Added Star
+  // Star,         // Added Star (Keep if needed by MiniGigCard)
   Lightbulb,    // Added Lightbulb
   BookOpen,     // Added BookOpen
+  // User,         // Added User for MiniGigCard instructor
+  // Clock         // Added Clock for MiniGigCard duration
 } from "lucide-react";
 import { cn } from "@/lib/utils"; // Added cn
 
@@ -73,6 +75,8 @@ interface Gig {
   isFeatured?: boolean; // Optional for this context
   isLocked: boolean;
   rating?: number; // Optional
+  instructor?: string; // Add instructor if needed by MiniGigCard
+  level?: "Beginner" | "Intermediate" | "Advanced"; // Add level if needed by MiniGigCard
   // other fields from GigPage not strictly needed here
 }
 
@@ -91,6 +95,8 @@ const recommendedGigs: Gig[] = [
     duration: "2 weeks",
     isLocked: false,
     rating: 4.4,
+    instructor: "David Okoye", // Added instructor
+    level: "Beginner", // Added level
   },
   {
     id: "4",
@@ -105,6 +111,8 @@ const recommendedGigs: Gig[] = [
     duration: "3 months",
     isLocked: false,
     rating: 4.7,
+    instructor: "Emeka Okafor", // Added instructor
+    level: "Beginner", // Added level
   },
    {
     id: "7",
@@ -119,6 +127,8 @@ const recommendedGigs: Gig[] = [
     duration: "2 months",
     isLocked: false,
     rating: 4.8,
+    instructor: "Fatima Ibrahim", // Added instructor
+    level: "Intermediate", // Added level
   },
 ];
 
@@ -136,6 +146,8 @@ const gigsToUnlock: Gig[] = [
     duration: "1 month",
     isLocked: true,
     rating: 4.6,
+    instructor: "Chiamaka Nwosu", // Added instructor
+    level: "Beginner", // Added level
   },
  {
     id: "5",
@@ -150,6 +162,8 @@ const gigsToUnlock: Gig[] = [
     duration: "1 month",
     isLocked: true,
     rating: 4.9,
+    // No instructor specified in mock, add if needed
+    level: "Intermediate", // Added level
   },
  {
     id: "8",
@@ -164,6 +178,8 @@ const gigsToUnlock: Gig[] = [
     duration: "3 weeks",
     isLocked: true,
     rating: 4.5,
+    instructor: "Tunde Balogun", // Added instructor
+    level: "Beginner", // Added level
   },
 ];
 
@@ -250,8 +266,8 @@ const StudentDashboard: React.FC = () => {
       setSearchTerm={setSearchTerm} // Pass dummy state
     >
       <div className="space-y-10">
-        {/* --- Top Stat Cards (Updated Grid Layout) --- */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"> {/* Changed grid-cols-1 to grid-cols-2, reduced gap slightly on mobile */}
+        {/* --- Top Stat Cards (Updated Grid Layout for Mobile) --- */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"> {/* Use grid-cols-2 for mobile */}
           <AnimatedSection delay="delay-100">
             {/* Available Balance Card */}
             <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
@@ -262,8 +278,8 @@ const StudentDashboard: React.FC = () => {
                 <Wallet className="h-4 w-4 text-green-400" />
               </CardHeader>
               <CardContent className="pb-3">
-                 {/* Updated Balance Display */}
-                <div className="text-2xl md:text-3xl font-bold text-green-400">₦{mockAvailableBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div> {/* Slightly smaller text on mobile */}
+                 {/* Updated Balance Display & smaller text for mobile */}
+                <div className="text-2xl md:text-3xl font-bold text-green-400">₦{mockAvailableBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 <p className="text-xs text-slate-500">No earnings yet</p>
               </CardContent>
               {/* Added Withdraw Button - Links to Wallet Page */}
@@ -279,56 +295,62 @@ const StudentDashboard: React.FC = () => {
 
           <AnimatedSection delay="delay-200">
             {/* Gigs Completed Card */}
-            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">
-                  Gigs Completed
-                </CardTitle>
-                <CheckCircle className="h-4 w-4 text-green-400" />
-              </CardHeader>
-              <CardContent>
-                {/* Updated Gigs Completed */}
-                <div className="text-2xl md:text-3xl font-bold text-white">0</div> {/* Slightly smaller text on mobile */}
-                <p className="text-xs text-slate-500">Complete gigs to earn!</p>
-              </CardContent>
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full flex flex-col justify-between"> {/* Flex utils for height consistency */}
+              <div> {/* Wrapper for header and content */}
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    Gigs Completed
+                  </CardTitle>
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                </CardHeader>
+                <CardContent>
+                  {/* Updated Gigs Completed & smaller text for mobile */}
+                  <div className="text-2xl md:text-3xl font-bold text-white">0</div>
+                  <p className="text-xs text-slate-500">Complete gigs to earn!</p>
+                </CardContent>
+              </div>
             </Card>
           </AnimatedSection>
 
           <AnimatedSection delay="delay-300">
             {/* Skill Level Card */}
-            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">
-                  Skill Level
-                </CardTitle>
-                <BarChart3 className="h-4 w-4 text-cyan-400" />
-              </CardHeader>
-              <CardContent>
-                {/* Updated Skill Level */}
-                <div className="text-xl md:text-3xl font-bold text-white"> {/* Adjusted text size */}
-                  Beginner
-                </div>
-                <p className="text-xs text-slate-500">Take quizzes to level up</p>
-              </CardContent>
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full flex flex-col justify-between"> {/* Flex utils for height consistency */}
+             <div> {/* Wrapper for header and content */}
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    Skill Level
+                  </CardTitle>
+                  <BarChart3 className="h-4 w-4 text-cyan-400" />
+                </CardHeader>
+                <CardContent>
+                  {/* Updated Skill Level & adjusted text size */}
+                  <div className="text-xl md:text-3xl font-bold text-white">
+                    Beginner
+                  </div>
+                  <p className="text-xs text-slate-500">Take quizzes to level up</p>
+                </CardContent>
+              </div>
             </Card>
           </AnimatedSection>
 
           <AnimatedSection delay="delay-400">
              {/* Gigs to Unlock Card */}
-            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">
-                  Gigs to Unlock
-                </CardTitle>
-                <Lock className="h-4 w-4 text-cyan-400" />
-              </CardHeader>
-              <CardContent>
-                 {/* Use dynamic length from mock data */}
-                <div className="text-2xl md:text-3xl font-bold text-white">{gigsToUnlock.length}</div> {/* Slightly smaller text on mobile */}
-                <p className="text-xs text-slate-500">
-                  High-paying opportunities
-                </p>
-              </CardContent>
+            <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50 h-full flex flex-col justify-between"> {/* Flex utils for height consistency */}
+              <div> {/* Wrapper for header and content */}
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    Gigs to Unlock
+                  </CardTitle>
+                  <Lock className="h-4 w-4 text-cyan-400" />
+                </CardHeader>
+                <CardContent>
+                  {/* Use dynamic length & smaller text for mobile */}
+                  <div className="text-2xl md:text-3xl font-bold text-white">{gigsToUnlock.length}</div>
+                  <p className="text-xs text-slate-500">
+                    High-paying opportunities
+                  </p>
+                </CardContent>
+              </div>
             </Card>
           </AnimatedSection>
         </div>
@@ -358,7 +380,7 @@ const StudentDashboard: React.FC = () => {
           </Card>
         </AnimatedSection>
 
-        {/* --- Sections: Recommendations & Unlock --- */}
+        {/* --- Added Sections: Recommendations & Unlock --- */}
          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10"> {/* Adjusted gap */}
             {/* Recommended Gigs */}
              <AnimatedSection delay="delay-300">
@@ -394,7 +416,7 @@ const StudentDashboard: React.FC = () => {
          </div>
 
 
-        {/* --- Charts Section --- */}
+        {/* --- Charts Section (Keeping both) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <AnimatedSection delay="delay-100" className="lg:col-span-2">
             <Card className="bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-lg shadow-slate-900/50">
